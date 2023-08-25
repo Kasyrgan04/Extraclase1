@@ -39,23 +39,27 @@ class LaminaMarcoCliente extends JPanel implements Runnable {
 		
 		nick=new JTextField(5);
 		
-		JLabel tex=new JLabel("Nick->");
+		JLabel tex=new JLabel("Nick");
 		
 		add(tex);
 		
 		add(nick);
-	
-		JLabel texto=new JLabel("-CHAT-");
 		
-		add(texto);
+		JLabel tex2=new JLabel("IP");
+		
+		add(tex2);
 			
 		ip=new JTextField(8);
 		
 		add(ip);
 		
-		JLabel tex2=new JLabel("<-IP");
+		JLabel tex3=new JLabel("Puerto");
 		
-		add(tex2);
+		puerto=new JTextField(8);
+		
+		add(tex3);
+		
+		add(puerto);
 		
 		chat=new JTextArea(12,20);
 		
@@ -67,11 +71,17 @@ class LaminaMarcoCliente extends JPanel implements Runnable {
 	
 		miboton=new JButton("Enviar");
 		
+		online=new JButton("Conectar");
+		
 		EnviaTexto mievento=new EnviaTexto();
 		
 		miboton.addActionListener(mievento);
 		
-		add(miboton);	
+		online.addActionListener(mievento);
+		
+		add(miboton);
+		
+		add(online);
 		
 		Thread hilo=new Thread(this);
 		
@@ -105,6 +115,8 @@ class LaminaMarcoCliente extends JPanel implements Runnable {
 				
 				mensaje.setTexto(campo1.getText());
 				
+				mensaje.setPuerto(puerto.getText());
+				
 				//Crea un flujo de datos para poder enviarlo al servidor
 				ObjectOutputStream mensaje_envio=new ObjectOutputStream(misocket.getOutputStream());
 				
@@ -131,11 +143,11 @@ class LaminaMarcoCliente extends JPanel implements Runnable {
 		
 		
 	//campo1 es la caja de texto donde se escribe el mensaje a enviar	
-	private JTextField campo1,nick,ip;
+	private JTextField campo1,nick,ip,puerto;
 	
 	private JTextArea chat;
 	
-	private JButton miboton;
+	private JButton miboton,online;
 
 	@Override
 	//Crea el hilo necesario para que la ventana del cliente siempre escuche al socket
@@ -171,7 +183,7 @@ class LaminaMarcoCliente extends JPanel implements Runnable {
   Se serializa para poder enviar los datos a traves de la red*/
 class Envio implements Serializable{
 	
-	private String nick,ip,texto;
+	private String nick,ip,texto,puerto;
 	
 	/*getters y setters almacenan y permiten obtener 
 	los datos contanidos en la variable*/
@@ -198,6 +210,14 @@ class Envio implements Serializable{
 
 	public void setTexto(String mensaje) {
 		this.texto = mensaje;
+	}
+
+	public String getPuerto() {
+		return puerto;
+	}
+
+	public void setPuerto(String puerto) {
+		this.puerto = puerto;
 	}
 	
 	

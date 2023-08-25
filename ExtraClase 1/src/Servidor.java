@@ -58,6 +58,7 @@ class MarcoServidor extends JFrame implements Runnable{
 			ServerSocket servidor=new ServerSocket(9999);
 			
 			String nick,ip,texto;
+			int puerto;
 			
 			Envio mensaje_recibido;
 			//Ciclo infinito para mantner siempre el socket abierto
@@ -73,12 +74,13 @@ class MarcoServidor extends JFrame implements Runnable{
 					nick=mensaje_recibido.getNick();
 					ip=mensaje_recibido.getIp();
 					texto=mensaje_recibido.getTexto();
+					puerto=Integer.parseInt(mensaje_recibido.getPuerto());
 					//Añade el texto a la ventana
 					
 					areatexto.append("\n" +nick+": "+texto+" (para "+ip+")");
 					
 					//Socket para enviar los datos al destinatario
-					Socket destinatario=new Socket(ip,9090);
+					Socket destinatario=new Socket(ip,puerto);
 					//Para enviar el paquete
 					ObjectOutputStream mensaje_saliente=new ObjectOutputStream(destinatario.getOutputStream());
 					//Mete los datos recibidos en el paquete saliente
