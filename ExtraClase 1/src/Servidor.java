@@ -1,6 +1,7 @@
 
 import javax.swing.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.awt.*;
 import java.io.*;
 
@@ -61,26 +62,34 @@ class MarcoServidor extends JFrame implements Runnable{
 			int puerto;
 			
 			Envio mensaje_recibido;
+			
+			ArrayList<Integer> puertos=new ArrayList<Integer>();
+			puertos.add(9090);
+			
 			//Ciclo infinito para mantner siempre el socket abierto
 			while(true) {
 				
-				for(int i=0; i<maxConnections;i++) {
-					sockets[i]=servidor.accept();
-					//Recibe el flujo de datos
-					ObjectInputStream flujo_entrada=new ObjectInputStream(sockets[i].getInputStream());
-					//Mete los datos recibos dentro del flujo
-					mensaje_recibido=(Envio) flujo_entrada.readObject();
-					//Se obtienen los datos contenidos en el flujo
-					nick=mensaje_recibido.getNick();
-					ip=mensaje_recibido.getIp();
-					texto=mensaje_recibido.getTexto();
-					puerto=Integer.parseInt(mensaje_recibido.getPuerto());
-					//Añade el texto a la ventana
+				Socket misocket=servidor.accept();
+				//Recibe el flujo de datos
+				ObjectInputStream flujo_entrada=new ObjectInputStream(misocket.getInputStream());
+				//Mete los datos recibos dentro del flujo
+				mensaje_recibido=(Envio) flujo_entrada.readObject();
+				//Se obtienen los datos contenidos en el flujo
+				nick=mensaje_recibido.getNick();
+				ip=mensaje_recibido.getIp();
+				texto=mensaje_recibido.getTexto();
+				puerto=Integer.parseInt(mensaje_recibido.getPuerto());
+				
+				if(puerto!= puertos.get(puertos.size()-1)) {
+					puertos.add(puerto);
+				}
+				//Añade el texto a la ventana
 					
-					areatexto.append("\n" +nick+": "+texto+" (para "+ip+")");
+				areatexto.append("\n" +nick+": "+texto+" (para "+ip+")");
 					
-					//Socket para enviar los datos al destinatario
-					Socket destinatario=new Socket(ip,puerto);
+				//Socket para enviar los datos al destinatario
+				for(int i=0; i<puertos.size();i++) {
+					Socket destinatario=new Socket(ip,puertos.get(i));
 					//Para enviar el paquete
 					ObjectOutputStream mensaje_saliente=new ObjectOutputStream(destinatario.getOutputStream());
 					//Mete los datos recibidos en el paquete saliente
@@ -88,12 +97,9 @@ class MarcoServidor extends JFrame implements Runnable{
 					mensaje_saliente.close();
 					//Cierra el socket que comunica el puerto de salida
 					destinatario.close();
-					
-					//Cierra la conexion
-					sockets[i].close();
 				}
-			//Acepta las conexiones
-			//Socket misocket=servidor.accept();
+				//Cierra la conexion
+				misocket.close();
 			
 			}
 		} catch (IOException | ClassNotFoundException e) {
