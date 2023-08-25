@@ -50,6 +50,9 @@ class MarcoServidor extends JFrame implements Runnable{
 	public void run() {
 		// TODO Auto-generated method stub
 		
+		int maxConnections=10; //numero maximo de conexiones aceptadas
+		Socket[] sockets= new Socket[maxConnections];
+		
 		try {
 			//Abre el puerto
 			ServerSocket servidor=new ServerSocket(9999);
@@ -59,32 +62,37 @@ class MarcoServidor extends JFrame implements Runnable{
 			Envio mensaje_recibido;
 			//Ciclo infinito para mantner siempre el socket abierto
 			while(true) {
-			
+				
+				for(int i=0; i<maxConnections;i++) {
+					sockets[i]=servidor.accept();
+					//Recibe el flujo de datos
+					ObjectInputStream flujo_entrada=new ObjectInputStream(sockets[i].getInputStream());
+					//Mete los datos recibos dentro del flujo
+					mensaje_recibido=(Envio) flujo_entrada.readObject();
+					//Se obtienen los datos contenidos en el flujo
+					nick=mensaje_recibido.getNick();
+					ip=mensaje_recibido.getIp();
+					texto=mensaje_recibido.getTexto();
+					//Añade el texto a la ventana
+					
+					areatexto.append("\n" +nick+": "+texto+" (para "+ip+")");
+					
+					//Socket para enviar los datos al destinatario
+					Socket destinatario=new Socket(ip,9090);
+					//Para enviar el paquete
+					ObjectOutputStream mensaje_saliente=new ObjectOutputStream(destinatario.getOutputStream());
+					//Mete los datos recibidos en el paquete saliente
+					mensaje_saliente.writeObject(mensaje_recibido);
+					mensaje_saliente.close();
+					//Cierra el socket que comunica el puerto de salida
+					destinatario.close();
+					
+					//Cierra la conexion
+					sockets[i].close();
+				}
 			//Acepta las conexiones
-			Socket misocket=servidor.accept();
-			//Recibe el flujo de datos
-			ObjectInputStream flujo_entrada=new ObjectInputStream(misocket.getInputStream());
-			//Mete los datos recibos dentro del flujo
-			mensaje_recibido=(Envio) flujo_entrada.readObject();
-			//Se obtienen los datos contenidos en el flujo
-			nick=mensaje_recibido.getNick();
-			ip=mensaje_recibido.getIp();
-			texto=mensaje_recibido.getTexto();
-			//Añade el texto a la ventana
-			areatexto.append("\n"+nick+": "+texto+" (para "+ip+")");
+			//Socket misocket=servidor.accept();
 			
-			//Socket para enviar los datos al destinatario
-			Socket destinatario=new Socket(ip,9090);
-			//Para enviar el paquete
-			ObjectOutputStream mensaje_saliente=new ObjectOutputStream(destinatario.getOutputStream());
-			//Mete los datos recibidos en el paquete saliente
-			mensaje_saliente.writeObject(mensaje_recibido);
-			mensaje_saliente.close();
-			//Cierra el socket que comunica el puerto de salida
-			destinatario.close();
-			
-			//Cierra la conexion
-			misocket.close();
 			}
 		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block

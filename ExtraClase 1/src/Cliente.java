@@ -39,15 +39,23 @@ class LaminaMarcoCliente extends JPanel implements Runnable {
 		
 		nick=new JTextField(5);
 		
+		JLabel tex=new JLabel("Nick->");
+		
+		add(tex);
+		
 		add(nick);
 	
-		JLabel texto=new JLabel("CHAT");
+		JLabel texto=new JLabel("-CHAT-");
 		
 		add(texto);
-		
+			
 		ip=new JTextField(8);
 		
 		add(ip);
+		
+		JLabel tex2=new JLabel("<-IP");
+		
+		add(tex2);
 		
 		chat=new JTextArea(12,20);
 		
@@ -84,7 +92,7 @@ class LaminaMarcoCliente extends JPanel implements Runnable {
 				/*La Ip acá contenida es en donde se encuentra el servidor
 				 * cambiarla a la Ip del servidor que se quiera usar
 				 */
-				Socket misocket=new Socket("192.168.56.1", 9999);
+				Socket misocket=new Socket("127.0.0.1", 9999);
 				
 				Envio mensaje=new Envio();
 				
@@ -146,7 +154,7 @@ class LaminaMarcoCliente extends JPanel implements Runnable {
 				//Lee el paquete de datos
 				recibido=(Envio) entrante.readObject();
 				//Muestra el mensaje
-				chat.append("/n"+recibido.getNick()+": "+recibido.getTexto());
+				chat.append("\n"+recibido.getNick()+": "+recibido.getTexto());
 				
 			}
 			
