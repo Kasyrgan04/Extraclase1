@@ -3,6 +3,11 @@ import java.io.*;
 import javax.swing.*;
 import java.net.*;
 
+// Interfaz grafica gracias a @PildorasInformaticas en youtube
+/* Estudiantes:
+ * Dylan Guerrero Gonzalez - 2022016016
+ * Giancarlo Vega Marín - 2020195338
+ */
 
 public class Cliente {
 
@@ -71,17 +76,11 @@ class LaminaMarcoCliente extends JPanel implements Runnable {
 	
 		miboton=new JButton("Enviar");
 		
-		online=new JButton("Conectar");
-		
 		EnviaTexto mievento=new EnviaTexto();
 		
 		miboton.addActionListener(mievento);
 		
-		online.addActionListener(mievento);
-		
 		add(miboton);
-		
-		add(online);
 		
 		Thread hilo=new Thread(this);
 		
@@ -147,7 +146,7 @@ class LaminaMarcoCliente extends JPanel implements Runnable {
 	
 	private JTextArea chat;
 	
-	private JButton miboton,online;
+	private JButton miboton;
 
 	@Override
 	//Crea el hilo necesario para que la ventana del cliente siempre escuche al socket

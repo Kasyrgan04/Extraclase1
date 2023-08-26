@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.awt.*;
 import java.io.*;
 
+// Interfaz grafica gracias a @PildorasInformaticas en youtube
+
 public class Servidor  {
 
 	public static void main(String[] args) {
